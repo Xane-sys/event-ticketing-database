@@ -2,14 +2,8 @@ const Event = require("../models/events");
 
 const createEvent = async (req, res) => {
   try {
-    const {
-      title,
-      description,
-      location,
-      date,
-      price,
-      totalTickets
-    } = req.body;
+    const { title, description, location, date, price, totalTickets } =
+      req.body;
 
     if (
       !title ||
@@ -20,7 +14,7 @@ const createEvent = async (req, res) => {
       totalTickets === undefined
     ) {
       return res.status(400).json({
-        message: "All event fields are required"
+        message: "All event fields are required",
       });
     }
 
@@ -28,32 +22,25 @@ const createEvent = async (req, res) => {
 
     if (Number.isNaN(eventDate.getTime())) {
       return res.status(400).json({
-        message: "Invalid event date"
+        message: "Invalid event date",
       });
     }
 
     if (eventDate <= new Date()) {
       return res.status(400).json({
-        message: "Event date must be in the future"
+        message: "Event date must be in the future",
       });
     }
 
-    if (
-      typeof price !== "number" ||
-      !Number.isFinite(price) ||
-      price < 0
-    ) {
+    if (typeof price !== "number" || !Number.isFinite(price) || price < 0) {
       return res.status(400).json({
-        message: "Price must be a valid non-negative number"
+        message: "Price must be a valid non-negative number",
       });
     }
 
-    if (
-      !Number.isSafeInteger(totalTickets) ||
-      totalTickets < 1
-    ) {
+    if (!Number.isSafeInteger(totalTickets) || totalTickets < 1) {
       return res.status(400).json({
-        message: "Total tickets must be a positive integer"
+        message: "Total tickets must be a positive integer",
       });
     }
 
@@ -65,18 +52,18 @@ const createEvent = async (req, res) => {
       price,
       totalTickets,
       availableTickets: totalTickets,
-      organizer: req.user._id
+      organizer: req.user._id,
     });
 
     return res.status(201).json({
       message: "Event created successfully",
-      event
+      event,
     });
   } catch (error) {
     console.error(error);
 
     return res.status(500).json({
-      message: "Failed to create event"
+      message: "Failed to create event",
     });
   }
 };
@@ -84,39 +71,41 @@ const createEvent = async (req, res) => {
 const getEvents = async (req, res) => {
   try {
     const events = await Event.find({
-      date: { $gt: new Date() }
+      date: { $gt: new Date() },
     })
       .populate("organizer", "name")
       .sort({ date: 1 });
 
     return res.status(200).json({
       count: events.length,
-      events
+      events,
     });
   } catch (error) {
     console.error(error);
 
     return res.status(500).json({
-      message: "Failed to retrieve events"
+      message: "Failed to retrieve events",
     });
   }
 };
 
 const getEventById = async (req, res) => {
   try {
-    const event = await Event.findById(req.params.id)
-      .populate("organizer", "name");
+    const event = await Event.findById(req.params.id).populate(
+      "organizer",
+      "name",
+    );
 
     if (!event) {
       return res.status(404).json({
-        message: "Event not found"
+        message: "Event not found",
       });
     }
 
     return res.status(200).json({ event });
   } catch (error) {
     return res.status(400).json({
-      message: "Invalid event ID"
+      message: "Invalid event ID",
     });
   }
 };
@@ -124,5 +113,5 @@ const getEventById = async (req, res) => {
 module.exports = {
   createEvent,
   getEvents,
-  getEventById
+  getEventById,
 };

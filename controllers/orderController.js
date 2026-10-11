@@ -8,7 +8,7 @@ const purchaseTicket = async (req, res) => {
     // 1. Validate the quantity
     if (!Number.isSafeInteger(quantity) || quantity < 1) {
       return res.status(400).json({
-        message: "Quantity must be a positive integer"
+        message: "Quantity must be a positive integer",
       });
     }
 
@@ -17,22 +17,22 @@ const purchaseTicket = async (req, res) => {
       {
         _id: eventId,
         availableTickets: { $gte: quantity },
-        date: { $gt: new Date() }
+        date: { $gt: new Date() },
       },
       {
         $inc: {
-          availableTickets: -quantity
-        }
+          availableTickets: -quantity,
+        },
       },
       {
-        new: true
-      }
+        new: true,
+      },
     );
 
     // 3. Check if tickets are available
     if (!event) {
       return res.status(400).json({
-        message: "Event not found, event has passed, or insufficient tickets"
+        message: "Event not found, event has passed, or insufficient tickets",
       });
     }
 
@@ -45,20 +45,19 @@ const purchaseTicket = async (req, res) => {
       event: event._id,
       quantity,
       totalAmount,
-      status: "pending"
+      status: "pending",
     });
 
     // 6. Return the result
     return res.status(201).json({
       message: "Ticket reservation created successfully. Payment is pending.",
-      order
+      order,
     });
-
   } catch (error) {
     console.error(error);
 
     return res.status(500).json({
-      message: "Failed to create ticket reservation"
+      message: "Failed to create ticket reservation",
     });
   }
 };

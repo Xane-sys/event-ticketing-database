@@ -13,7 +13,7 @@ connectDB();
 
 app.get("/", (req, res) => {
   res.status(200).json({
-    message: "Event Management and Ticketing API is running"
+    message: "Event Management and Ticketing API is running",
   });
 });
 
@@ -30,7 +30,6 @@ const PORT = process.env.PORT || 8080;
 const authRoutes = require("./routes/authRoutes");
 
 app.use("/api/auth", authRoutes);
-
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);

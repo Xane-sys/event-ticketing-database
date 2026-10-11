@@ -7,22 +7,19 @@ const authenticate = async (req, res, next) => {
 
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
       return res.status(401).json({
-        message: "Authentication required"
+        message: "Authentication required",
       });
     }
 
     const token = authHeader.split(" ")[1];
 
-    const decoded = jwt.verify(
-      token,
-      process.env.JWT_SECRET
-    );
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
     const user = await User.findById(decoded.userId);
 
     if (!user) {
       return res.status(401).json({
-        message: "User no longer exists"
+        message: "User no longer exists",
       });
     }
 
@@ -31,7 +28,7 @@ const authenticate = async (req, res, next) => {
     next();
   } catch (error) {
     return res.status(401).json({
-      message: "Invalid or expired token"
+      message: "Invalid or expired token",
     });
   }
 };

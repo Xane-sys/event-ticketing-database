@@ -5,42 +5,42 @@ const orderSchema = new mongoose.Schema(
     user: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
-      required: true
+      required: true,
     },
 
     event: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Event",
-      required: true
+      required: true,
     },
 
     quantity: {
       type: Number,
       required: true,
-      min: 1
+      min: 1,
     },
 
     totalAmount: {
       type: Number,
       required: true,
-      min: 0
+      min: 0,
     },
 
     status: {
       type: String,
       enum: ["pending", "paid", "cancelled", "refunded"],
-      default: "pending"
+      default: "pending",
     },
 
     ticketCode: {
       type: String,
       unique: true,
-      sparse: true
-    }
+      sparse: true,
+    },
   },
   {
-    timestamps: true
-  }
+    timestamps: true,
+  },
 );
 
 module.exports = mongoose.model("Order", orderSchema);

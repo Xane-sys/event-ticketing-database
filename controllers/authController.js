@@ -8,23 +8,23 @@ const register = async (req, res) => {
 
     if (!name || !email || !password) {
       return res.status(400).json({
-        message: "Name, email and password are required"
+        message: "Name, email and password are required",
       });
     }
 
     if (password.length < 8) {
       return res.status(400).json({
-        message: "Password must be at least 8 characters"
+        message: "Password must be at least 8 characters",
       });
     }
 
     const existingUser = await User.findOne({
-      email: email.toLowerCase().trim()
+      email: email.toLowerCase().trim(),
     });
 
     if (existingUser) {
       return res.status(409).json({
-        message: "Email is already registered"
+        message: "Email is already registered",
       });
     }
 
@@ -33,7 +33,7 @@ const register = async (req, res) => {
     const user = await User.create({
       name,
       email,
-      password: hashedPassword
+      password: hashedPassword,
     });
 
     return res.status(201).json({
@@ -42,20 +42,20 @@ const register = async (req, res) => {
         id: user._id,
         name: user.name,
         email: user.email,
-        role: user.role
-      }
+        role: user.role,
+      },
     });
   } catch (error) {
     if (error.code === 11000) {
       return res.status(409).json({
-        message: "Email is already registered"
+        message: "Email is already registered",
       });
     }
 
     console.error(error);
 
     return res.status(500).json({
-      message: "Internal server error"
+      message: "Internal server error",
     });
   }
 };
@@ -66,39 +66,36 @@ const login = async (req, res) => {
 
     if (!email || !password) {
       return res.status(400).json({
-        message: "Email and password are required"
+        message: "Email and password are required",
       });
     }
 
     const user = await User.findOne({
-      email: email.toLowerCase().trim()
+      email: email.toLowerCase().trim(),
     }).select("+password");
 
     if (!user) {
       return res.status(401).json({
-        message: "Invalid email or password"
+        message: "Invalid email or password",
       });
     }
 
-    const passwordMatches = await bcrypt.compare(
-      password,
-      user.password
-    );
+    const passwordMatches = await bcrypt.compare(password, user.password);
 
     if (!passwordMatches) {
       return res.status(401).json({
-        message: "Invalid email or password"
+        message: "Invalid email or password",
       });
     }
 
     const token = jwt.sign(
       {
-        userId: user._id.toString()
+        userId: user._id.toString(),
       },
       process.env.JWT_SECRET,
       {
-        expiresIn: "1h"
-      }
+        expiresIn: "1h",
+      },
     );
 
     return res.status(200).json({
@@ -108,19 +105,19 @@ const login = async (req, res) => {
         id: user._id,
         name: user.name,
         email: user.email,
-        role: user.role
-      }
+        role: user.role,
+      },
     });
   } catch (error) {
     console.error(error);
 
     return res.status(500).json({
-      message: "Internal server error"
+      message: "Internal server error",
     });
   }
 };
 
 module.exports = {
   register,
-  login
+  login,
 };
